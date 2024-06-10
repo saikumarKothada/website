@@ -7,7 +7,6 @@ pipeline {
                 checkout scm
             }
         }
-        
 
         stage('Build') {
             steps {
@@ -20,7 +19,7 @@ pipeline {
                 script {
                     def containerExists = sh(script: 'docker ps -q -f name=my-website-container', returnStatus: true)
                     if (containerExists == 0) {
-                        currentBuild.result = 'FAILURE' // Mark the build as failed
+                        currentBuild.result = 'SUCCESS' // Mark the build as successful
                     }
                 }
             }
@@ -30,7 +29,7 @@ pipeline {
             when {
                 branch 'master'
                 expression {
-                    currentBuild.result == 'FAILURE' // Only run if container doesn't exist
+                    currentBuild.result != 'SUCCESS' // Only run if container doesn't exist
                 }
             }
             steps {
@@ -41,9 +40,6 @@ pipeline {
         stage('Deploy to /var/www/html') {
             when {
                 branch 'master'
-                expression {
-                    currentBuild.result != 'FAILURE' // Only run if container exists
-                }
             }
             steps {
                 sh 'docker cp . my-website-container:/var/www/htm'
