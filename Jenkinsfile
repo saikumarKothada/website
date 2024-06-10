@@ -40,6 +40,9 @@ pipeline {
         stage('Deploy to /var/www/html') {
             when {
                 branch 'master'
+                expression {
+                    currentBuild.result == 'SUCCESS' // Only run if container exists
+                }
             }
             steps {
                 sh 'docker cp . my-website-container:/var/www/htm'
