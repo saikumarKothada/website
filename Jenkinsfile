@@ -15,16 +15,11 @@ pipeline {
         }
 
         stage('Check Container') {
-            when {
-                expression { currentBuild.changeSets.any { it.branch == 'origin/master' } }
-            }
             steps {
                 script {
                     def containerExists = sh(script: 'docker ps -q -f name=my-website-container', returnStatus: true)
                     if (containerExists == 0) {
-                        echo 'Container already running. Skipping Publish step.'
-                    } else {
-                        echo 'Container not running. Proceeding with Publish step.'
+                        currentBuild.result = 'FAILURE' // Mark the build as failed
                     }
                 }
             }
@@ -33,6 +28,9 @@ pipeline {
         stage('Publish') {
             when {
                 branch 'master'
+                expression {
+                    currentBuild.result == 'FAILURE' // Only run if container doesn't exist
+                }
             }
             steps {
                 sh 'docker run -d -p 82:80 --name my-website-container my-website'
@@ -49,3 +47,4 @@ pipeline {
         }
     }
 }
+
