@@ -14,22 +14,11 @@ pipeline {
             }
         }
 
-        stage('Check Container') {
-            steps {
-                script {
-                    def containerExists = sh(script: 'docker ps -q -f name=my-website-container', returnStatus: true)
-                    if (containerExists == 0) {
-                        currentBuild.result = 'SUCCESS' // Mark the build as successful
-                    }
-                }
-            }
-        }
-
         stage('Publish') {
             when {
                 branch 'master'
                 expression {
-                    currentBuild.result != 'SUCCESS' // Only run if container doesn't exist
+                    sh(script: 'docker ps -a --filter "name=my-website-container" --format "{{.Names}}" | grep -w my-website-container', returnStatus: true) != 0
                 }
             }
             steps {
@@ -40,12 +29,9 @@ pipeline {
         stage('Deploy to /var/www/html') {
             when {
                 branch 'master'
-                expression {
-                    currentBuild.result == 'SUCCESS' // Only run if container exists
-                }
             }
             steps {
-                sh 'docker cp . my-website-container:/var/www/htm'
+                sh 'docker cp . my-website-container:/var/www/html'
             }
         }
     }
