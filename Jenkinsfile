@@ -10,7 +10,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'docker build -t my-website .'
+                sh "docker build -t my-website:${env.BUILD_NUMBER} ."
             }
         }
 
@@ -22,7 +22,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'docker run -d -p 82:80 --name my-website-container my-website'
+                sh "docker run -d -p 82:80 --name my-website-container my-website:${env.BUILD_NUMBER}"
             }
         }
 
@@ -31,7 +31,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                sh 'docker cp . my-website-container:/var/www/html'
+                sh "docker cp . my-website-container:/var/www/html"
             }
         }
     }
