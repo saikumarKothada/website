@@ -1,8 +1,5 @@
-FROM ubuntu
+FROM httpd
 
-RUN apt-get update && apt-get install -y apache2
+RUN apt-get update
 
-COPY . /var/www/html
-
-EXPOSE 80
-CMD ["apache2ctl", "-D", "FOREGROUND"]
+ADD https://github.com/saikumarKothada/website.git /usr/local/apache2/htdocs
