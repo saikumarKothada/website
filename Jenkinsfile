@@ -30,7 +30,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                sh "docker cp . my-website-container:/var/www/html"
+                sh "docker cp . my-website-container:/usr/local/apache2/htdocs/"
             }
         }
     }
