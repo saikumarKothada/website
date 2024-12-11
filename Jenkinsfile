@@ -10,7 +10,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh "docker build --network -t my-website:${env.BUILD_NUMBER} ."
+                sh "docker build --network host -t my-website:${env.BUILD_NUMBER} ."
             }
         }
 
