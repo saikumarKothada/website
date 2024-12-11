@@ -25,7 +25,7 @@ pipeline {
                 sh "docker run -d -p 82:80 --name my-website-container my-website:${env.BUILD_NUMBER}"
             }
         }
- /*       stage('Deploy to /var/www/html') {
+        stage('Deploy to /var/www/html') {
             when {
                 branch 'master'
             }
@@ -33,6 +33,5 @@ pipeline {
                 sh "docker cp . my-website-container:/var/www/html"
             }
         }
-        */
     }
 }
